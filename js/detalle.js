@@ -399,7 +399,7 @@ $(document).ready(function(e) {
 	parametros.Observacion = $("#observacion").val();	
 	parametros.Latitud = latitude;	
 	parametros.Longitud = longitude;	
-	parametros.Incidencia = 0;//$("#incidencia").val();
+	parametros.Incidencia = $("#incidencia").val();
 	parametros.FlagMail = 1;
 	parametros.HoraInicio = $("#hora_inicio").val();	 
 	parametros.HoraFin = $("#hora_fin").val();
