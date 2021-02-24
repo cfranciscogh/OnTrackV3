@@ -25,6 +25,7 @@
 
 	<div data-role="header" data-position="fixed" data-theme="a">
 		<h1 style="margin:0 15%;" id="tituloEmpresa">Mis Entregas</h1>
+        <a href="javascript:MarcarTodos();" data-ajax="false" data-icon="info" class="ui-btn-right" style="height: 15px; margin-right: 5px;">Marcar Todos</a>
 	</div><!-- /header -->
 
 	<div id="contentProgramaciones" role="main" class="ui-content" style="background-color:#fff; padding-top:10px;">
@@ -81,6 +82,8 @@
 		<div class="navBar" data-role="navbar" data-iconpos="top">
 		<ul>
 			<li><a id="actualizar" data-icon="check">Confirmar</a></li>
+
+            <li><a id="enruta" data-icon="check">En Ruta</a></li>
             
             <li><a href="#myPopup" data-rel="popup" data-position-to="window"  data-icon="delete">Liberar</a></li>
             

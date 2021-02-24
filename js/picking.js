@@ -1,4 +1,6 @@
 var rutaWS = "http://ontrack.tmeridian.com.pe:9002/api/";
+var totalCheck = 0;
+var countCheck = 1;
 $(document).ready(function(e) {  
 	getProgramaciones();
 	
@@ -64,6 +66,91 @@ $(document).ready(function(e) {
     });
 	
 	
+	$("#enruta").click(function (e) {
+	    var IDPedido = "";
+	    $("#listProgramacion input").each(function (index, element) {
+	        if ($(this).is(":checked")) {
+	            IDPedido = IDPedido + "," + $(this).data("pedido");
+	        }
+	    });
+
+	    if (IDPedido == "") {
+	        alerta('Debe seleccionar 1 o m\u00E1s registros');
+	        return;
+	    }
+
+	    totalCheck = $("#listProgramacion input:checked").length;
+	    // alert(totalCheck);
+	    $.mobile.loading('show');
+
+	    $("#listProgramacion input").each(function (index, element) {
+	        if ($(this).is(":checked")) {
+
+	            var date=new Date();
+	            hour=date.getHours();
+	            min=date.getMinutes(); 
+	            if ((String(hour)).length == 1)
+	                hour = '0' + hour;
+	            if ((String(min)).length == 1)
+	                min = '0' + min;
+                    
+	            dateT = hour + ':' + min;
+	            alert(dateT);
+
+	            IDPedido = $(this).data("pedido");	       
+	            var parametros = new Object();
+	            parametros.IDTranking = 0;
+	            parametros.IDPedido = IDPedido;
+	            parametros.TiempoAproxLlegada = dateT;
+	            parametros.Recepcionado = 0;
+	            parametros.Nombre = "";
+	            parametros.DNI = "";
+	            parametros.IDEstado = 4;
+	            parametros.Observacion = "";
+	            parametros.Latitud = "";
+	            parametros.Longitud = "";
+	            parametros.Incidencia = 0;
+	            parametros.FlagMail = 1;
+	            parametros.HoraInicio = "";
+	            parametros.HoraFin = "";
+	            parametros.HoraLlegada = "";
+	            parametros.ParcialGrupo = 0;
+	            console.log(parametros);
+
+	            $.ajax({
+	                url: rutaWS + "Operaciones/Chofer.asmx/GenerarTrakingV3",
+	                type: "POST",
+	                dataType: "json",
+	                data: JSON.stringify(parametros),
+	                contentType: "application/json; charset=utf-8",
+	                success: function (data, textStatus, jqXHR) {
+	                    resultado = $.parseJSON(data.d);
+	                    console.log(resultado);
+	                    $.mobile.loading('hide');
+	                    //alert(countCheck);
+	                    if (resultado.code == 1) {
+	                        if (totalCheck == countCheck) {
+	                            alerta(resultado.message);
+	                            getProgramaciones();
+	                        }
+	                    }
+	                    countCheck++;
+	                },
+
+	                error: function (jqxhr) {
+	                    console.log(jqxhr);
+	                    alerta('Error de conexi\u00f3n, contactese con sistemas!');
+	                }
+
+	            });
+	            
+	        }
+	    });
+
+	    
+
+	});
+
 
 	 
 	$("#liberar").click(function(e) {
@@ -136,6 +223,13 @@ $(document).ready(function(e) {
 	
 });
 
+
+function MarcarTodos() {
+    $("#listProgramacion input").each(function (index, element) {
+        $(this).prop("checked", true).checkboxradio("refresh");
+    });
+}
+
 function setIncidencias_Tracking(empresa, idestado){
 		
 	$("#incidencia").html("<option value='0'>Seleccionar Incidencia</option>");
@@ -171,7 +265,7 @@ function setIncidencias_Tracking(empresa, idestado){
 	
 }
 
-function actualizarChofer(IDPedido,IDChofer){
+function actualizarChofer_borrar(IDPedido,IDChofer){
 	
 	$.mobile.loading('show');
 			$.ajax({
